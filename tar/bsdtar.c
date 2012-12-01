@@ -71,23 +71,8 @@ __FBSDID("$FreeBSD: src/usr.bin/tar/bsdtar.c,v 1.93 2008/11/08 04:43:24 kientzle
 #include "err.h"
 
 /*
- * Per POSIX.1-1988, tar defaults to reading/writing archives to/from
- * the default tape device for the system.  Pick something reasonable here.
+ * Per sanity, tar defaults to reading/writing archives to/from -
  */
-#ifdef __linux
-#define	_PATH_DEFTAPE "/dev/st0"
-#endif
-#if defined(_WIN32) && !defined(__CYGWIN__)
-#define	_PATH_DEFTAPE "\\\\.\\tape0"
-#endif
-#if defined(__APPLE__)
-#undef _PATH_DEFTAPE
-#define	_PATH_DEFTAPE "-"  /* Mac OS has no tape support, default to stdio. */
-#endif
-
-#ifndef _PATH_DEFTAPE
-#define	_PATH_DEFTAPE "/dev/tape"
-#endif
 
 #ifdef __MINGW32__
 int _CRT_glob = 0; /* Disable broken CRT globbing. */
@@ -206,10 +191,8 @@ main(int argc, char **argv)
 	/* Look up uid of current user for future reference */
 	bsdtar->user_uid = geteuid();
 
-	/* Default: open tape drive. */
-	bsdtar->filename = getenv("TAPE");
-	if (bsdtar->filename == NULL)
-		bsdtar->filename = _PATH_DEFTAPE;
+	/* Default: open - */
+	bsdtar->filename = "-";
 
 	/* Default block size settings. */
 	bsdtar->bytes_per_block = DEFAULT_BYTES_PER_BLOCK;
@@ -868,7 +851,7 @@ static const char *long_help_msg =
 	"  -c Create  -r Add/Replace  -t List  -u Update  -x Extract\n"
 	"Common Options:\n"
 	"  -b #  Use # 512-byte records per I/O block\n"
-	"  -f <filename>  Location of archive (default " _PATH_DEFTAPE ")\n"
+	"  -f <filename>  Location of archive (default -)\n"
 	"  -v    Verbose\n"
 	"  -w    Interactive\n"
 	"Create: %p -c [options] [<file> | <dir> | @<archive> | -C <dir> ]\n"
