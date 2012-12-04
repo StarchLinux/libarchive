@@ -8,3 +8,5 @@ LIB = archive
 
 .include <bsd.lib.mk>
 .include <bsd.hdr.mk>
+
+install: hdrinstall
